@@ -20,7 +20,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/azuki774/XXX
+            ghcr.io/azuki774/shorten
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}

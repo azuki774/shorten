@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  shorten-db:
+    image: mariadb:10.9
+    restart: always
+    container_name: shorten-db
+    command:
+      - mysqld
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=shorten
+      - MYSQL_ROOT_PASSWORD=password
+      - TZ=Asia/Tokyo
