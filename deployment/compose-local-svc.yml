@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  shorten-redirector:
+    image: shorten-redirector:latest
+    restart: always
+    container_name: shorten-redirector
+    ports:
+      - "8080:80"
