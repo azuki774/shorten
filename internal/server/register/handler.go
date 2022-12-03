@@ -1,13 +1,14 @@
-package redirector
+package register
 
 import (
+	"azuki774/shorten/internal/model"
 	"azuki774/shorten/internal/usecase"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 )
 
@@ -24,20 +25,32 @@ func (s *Server) rootHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "It is the root page.\n")
 }
 
-func (s *Server) getHandler(w http.ResponseWriter, r *http.Request) {
-	pathParam := mux.Vars(r)
-	shortKey := pathParam["short_key"]
+func (s *Server) registHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	info, err := s.RedirectService.GetTargetURL(ctx, shortKey)
+	var req model.URLRegistRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		if errors.Is(err, usecase.ErrRecordNotFound) {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprintf(w, "not found")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	info, err := s.RegistService.Regist(ctx, &req)
+	if err != nil {
+		if errors.Is(err, usecase.ErrInvalidArgs) {
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, info.TargetURL, http.StatusFound)
+	outputJson, err := json.Marshal(&info)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprint(w, string(outputJson))
 }

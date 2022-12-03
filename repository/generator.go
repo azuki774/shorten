@@ -14,7 +14,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func (g *SourceGenerator) Generate(n int) (target string, err error) {
+func (g *SourceGenerator) Generate(n int) (source string, err error) {
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]

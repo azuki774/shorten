@@ -6,6 +6,7 @@ SHELL=/bin/bash
 
 build:
 	docker build -t shorten-redirector:latest -f build/Dockerfile-redirector .
+	docker build -t shorten-register:latest -f build/Dockerfile-register .
 
 bin:
 	go build -a -tags "netgo" -installsuffix netgo  -ldflags="-s -w -extldflags \"-static\"" -o build/bin/ ./...
@@ -27,7 +28,7 @@ restart:
 
 test:
 	gofmt -l .
-	go vet -v ./...
+	go vet ./...
 	staticcheck ./...
 	go test -v ./...  | $(COLORIZE_PASS) | $(COLORIZE_FAIL)
 
@@ -35,3 +36,4 @@ clean:
 	docker compose -f deployment/compose-local-svc.yml down
 	docker compose -f deployment/compose-local-db.yml down
 	rm -rf build/bin/shorten-redirector
+	rm -rf build/bin/shorten-register
