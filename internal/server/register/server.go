@@ -1,4 +1,4 @@
-package redirector
+package register
 
 import (
 	"azuki774/shorten/internal/model"
@@ -12,17 +12,17 @@ import (
 	"go.uber.org/zap"
 )
 
-type RedirectService interface {
-	GetTargetURL(ctx context.Context, key string) (info model.URLShortInfoResponse, err error)
+type RegistService interface {
+	Regist(ctx context.Context, req *model.URLRegistRequest) (info model.URLShortInfoResponse, err error)
 }
 
 type Server struct {
-	Logger          *zap.Logger
-	RedirectService RedirectService
+	Logger        *zap.Logger
+	RegistService RegistService
 }
 
 func (s *Server) Start(ctx context.Context) error {
-	s.Logger.Info("redirector start")
+	s.Logger.Info("register start")
 	router := mux.NewRouter()
 	s.addRecordFunc(router)
 
@@ -57,6 +57,6 @@ func (s *Server) Start(ctx context.Context) error {
 
 func (s *Server) addRecordFunc(r *mux.Router) {
 	r.HandleFunc("/", s.rootHandler)
-	r.HandleFunc("/{short_key}", s.getHandler)
+	r.HandleFunc("/regist", s.registHandler).Methods("POST")
 	r.Use(s.middlewareLogging)
 }

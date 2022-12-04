@@ -5,5 +5,15 @@ services:
     image: shorten-redirector:latest
     restart: always
     container_name: shorten-redirector
+    environment:
+    - HOST_NAME=http://localhost:8080/
     ports:
       - "8080:80"
+  shorten-register:
+    image: shorten-register:latest
+    restart: always
+    container_name: shorten-register
+    environment:
+    - HOST_NAME=http://localhost:8080/
+    ports:
+      - "8888:80"

@@ -13,7 +13,7 @@ func TestSourceGenerator_Generate(t *testing.T) {
 		name       string
 		g          *SourceGenerator
 		args       args
-		wantTarget string
+		wantSource string
 		wantErr    bool
 	}{
 		{
